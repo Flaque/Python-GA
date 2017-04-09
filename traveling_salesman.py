@@ -19,3 +19,44 @@ class TravelingSalesman(GA):
             return True
         else:
             return False
+
+
+class TravelingSalesman_PMX_TopDown(TravelingSalesman):
+
+    def mate(self, pairs):
+        # TODO
+        pass
+
+    def pair(self, pairs):
+        # TODO
+        pass
+
+class TravelingSalesman_PMX_Tourn(TravelingSalesman):
+
+    def mate(self, pairs):
+        # TODO
+        pass
+
+    def pair(self, pairs):
+        # TODO
+        pass
+
+class TravelingSalesman_CX_TopDown(TravelingSalesman):
+
+    def mate(self, pairs):
+        # TODO
+        pass
+
+    def pair(self, pairs):
+        # TODO
+        pass
+
+class TravelingSalesman_CX_Tourn(TravelingSalesman):
+
+    def mate(self, pairs):
+        # TODO
+        pass
+
+    def pair(self, pairs):
+        # TODO
+        pass
