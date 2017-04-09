@@ -2,6 +2,7 @@ from ga import GA
 import random
 from chromosome import Chromosome
 from graph import Graph
+import pmx
 
 class TravelingSalesman(GA):
     """ Abstract class, don't run directly """
@@ -24,8 +25,7 @@ class TravelingSalesman(GA):
 class TravelingSalesman_PMX_TopDown(TravelingSalesman):
 
     def mate(self, pairs):
-        # TODO
-        pass
+        self.population = pmx.mate(pairs)
 
     def pair(self, pairs):
         # TODO
@@ -34,8 +34,7 @@ class TravelingSalesman_PMX_TopDown(TravelingSalesman):
 class TravelingSalesman_PMX_Tourn(TravelingSalesman):
 
     def mate(self, pairs):
-        # TODO
-        pass
+        self.population = pmx.mate(pairs)
 
     def pair(self, pairs):
         # TODO
