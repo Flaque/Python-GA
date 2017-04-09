@@ -1,0 +1,7 @@
+{
+  "NumChromesInit": 128,
+  "NumChromes": 64,
+  "NumGenes": 5,
+  "MutFact": 0.1,
+  "NumIterations": 1000
+}
