@@ -13,9 +13,6 @@ class WordGuess(GA):
         GA.__init__(self, params_path)
         self.target = target
 
-    def dist(self, chrome):
-        return hamming_distance(self.target, str(chrome))
-
     def mate(self, pairs):
         """ Mates """
         families = [] # Build us some real estate
@@ -50,14 +47,14 @@ class WordGuess(GA):
 
     def is_close_enough(self, chrome):
         """ Should be overwritten by subclass """
-        if self.dist(chrome) == 0:
+        if self.compute_cost(chrome) == 0:
             return True
         else:
             return False
 
     def compute_cost(self, chrome):
         """ Should be overwritten by subclass, computes the cost of a single chromosome """
-        return self.dist(chrome)
+        return return hamming_distance(self.target, str(chrome))
 
 
 ga = WordGuess("params.json", "honey")
