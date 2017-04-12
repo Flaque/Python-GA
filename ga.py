@@ -11,8 +11,8 @@ class GA:
         self.chars = list(lowercase) # Should be overwritten by subclass
         self.population = []
 
-    def random_letters(self, amount):
-        return numpy.random.choice(self.chars, amount)
+    def random_letters(self, amount, replace=True):
+        return numpy.random.choice(self.chars, amount, replace=replace)
 
     def sort(self):
         self.population = sorted(self.population, key=lambda x: x.cost)
@@ -40,6 +40,10 @@ class GA:
             chrome.genes[i] = self.random_letters(1)[0]
             chrome.cost = self.compute_cost(chrome)
 
+    def compute_cost_for_all(self):
+        for chrome in self.population:
+            chrome.cost = self.compute_cost(chrome)
+
     def evolve(self, andPrint=False):
 
         iterations = 0
@@ -47,10 +51,15 @@ class GA:
             pairs = self.pair()
             self.mate(pairs)
             self.mutate()
+            self.compute_cost_for_all()
             self.sort()
 
             if andPrint:
-                print iterations, self.population[0]
+                print ' '
+                print 'i', iterations, 'best', self.population[0]
+                print 'cost', self.population[0].cost
+                print 'pop', self.population
+                print '----'
 
             if self.is_close_enough(self.population[0]):
                 break

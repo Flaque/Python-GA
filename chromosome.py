@@ -13,6 +13,9 @@ class Chromosome:
         """ Lets us do str(chrome) """
         return ''.join(self.genes)
 
+    def __len__(self):
+        return len(self.genes)
+
     def __eq__(self, other):
         """ Overrides default equality so we can do chrome1 == chrome2 """
         for index, gene in enumerate(other.genes):
