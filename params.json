@@ -3,5 +3,5 @@
   "NumChromes": 3,
   "NumGenes": 8,
   "MutFact": 0.4,
-  "NumIterations": 1000
+  "NumIterations": 5
 }

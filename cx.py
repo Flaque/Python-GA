@@ -1,4 +1,5 @@
 from random import randint
+from chromosome import Chromosome
 
 def _subsection(item):
     L = list(range(0, len(item)-1))
@@ -6,80 +7,53 @@ def _subsection(item):
     right = randint(left + 1, len(L))
     return left, right
 
-def _get_replaced_item(left, right, child, gene, relation_map):
+def _map(mother, father):
+    return dict(zip(father, mother))
 
-    # Hit a base case
-    if gene not in relation_map:
-        return gene
+def _get_cycle(start, relation_map):
 
-    mapped = relation_map[gene]
-    if mapped not in child[left:right]:
-        return mapped
-    else:
-        return _get_replaced_item(left, right, child, mapped, relation_map)
+    cycle = [start]
 
-def _map(left, right, mother, father):
-    return dict(zip(father[left:right], mother[left:right]))
+    current = relation_map[start]
+    while current not in cycle:
+        cycle.append(current)
+        current = relation_map[current]
 
-def _getIndex(item, child, left, right):
+    return cycle
 
-    # Search left
-    for i in range(0, left):
-        if child[i] == item:
-            return i
+def _superimpose_cycle(child, cycle):
+    c = 0
 
-    # Search right
-    for i in range(right, len(child)):
-        if child[i] == item:
-            return i
-
-
-def _swap_leftover_genes(left, right, mothers_child, fathers_child):
-    father_map = _map(left, right, mothers_child, fathers_child)
-
-    # Swap left versions
-    for i in range(0, left):
-        gene = fathers_child[i]
-        mother_gene = _get_replaced_item(left, right, fathers_child, gene, father_map)
-
-        fathers_child[i] = mother_gene
-        m_index = _getIndex(mother_gene, mothers_child, left, right)
-        mothers_child[m_index] = gene
-
-    for i in range(right, len(fathers_child)):
-        gene = fathers_child[i]
-        mother_gene = _get_replaced_item(left, right, fathers_child, gene, father_map)
-
-        fathers_child[i] = mother_gene
-        m_index = _getIndex(mother_gene, mothers_child, left, right)
-        mothers_child[m_index] = gene
-
-    return fathers_child, mothers_child
+    for i in range(0, len(child)):
+        if child[i] in cycle:
+            child[i] = cycle[c]
+            c += 1
+    return child
 
 
 def _mate_one(pair):
     mother, father = pair
     left, right = _subsection(mother)
-   
 
     # Create copies (children) so we don't effect the original
-    mothers_child = list(mother)
-    fathers_child = list(father)
-    index1 = random.randint(1, len(mothers_child)- 2)
-    index2 = random.randint(1, len(fathers_child)- 2)
+    mothers_child = list(mother.genes)
+    fathers_child = list(father.genes)
 
-    if index1 > index2: index1, index2 = index2, index1 #swap indices
+    relation_map = _map(mothers_child, fathers_child)
+    cycle = _get_cycle(fathers_child[0], relation_map)
 
-    #take the gene sequence from one point and connect it to the indices at
-    #the other
-    mothers_child = father[:index1] + mother[index1:index2] + father[index2:]
-    fathers_child2 = mother[:index1] + father[index1:index2] + mother[index2:]
+    mothers_child = _superimpose_cycle(mothers_child, cycle)
+    fathers_child = _superimpose_cycle(fathers_child, cycle)
 
-    return fathers_child, mothers_child
+
+    child1_chrome = Chromosome(''.join(mothers_child))
+    child2_chrome = Chromosome(''.join(fathers_child))
+
+    return child1_chrome, child2_chrome
 
 def mate(pairs):
     people = []
     for mother, father in pairs:
-        child1, child2 = _mate_one(pair)
+        child1, child2 = _mate_one((mother, father))
         people += [mother, father, child1, child2]
     return people
