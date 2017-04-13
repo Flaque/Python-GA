@@ -18,10 +18,12 @@ class Chromosome:
 
     def __eq__(self, other):
         """ Overrides default equality so we can do chrome1 == chrome2 """
+        if not other:
+            return False
         for index, gene in enumerate(other.genes):
             if gene != self.genes[index]:
                 return False
-        return true
+        return True
 
     def __ne__(self, other):
         """ Overrides != so we can do chrome1 != chrome2 """

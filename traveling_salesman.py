@@ -48,6 +48,42 @@ class TravelingSalesman(GA):
             chrome.genes[x], chrome.genes[y] = chrome.genes[y], chrome.genes[x]
             chrome.cost = self.compute_cost(chrome)
 
+    def topdown_pair(self):
+        pop_clone = list(self.population) # Clone the list
+
+        pop_clone = pop_clone[:self.params["NumChromes"]] # Only take the worthy
+
+        # Shuffle the list up
+        random.shuffle(pop_clone)
+
+        # Split into two
+        left, right = pop_clone[:len(pop_clone)/2], pop_clone[len(pop_clone)/2:]
+
+        # Pair the right with the left
+        return zip(left, right)
+
+    def tournament_pair(self):
+        mother = self.getByTournament()
+        father = self.getByTournament()
+
+
+        # create larger population
+        size = self.params["NumChromes"]
+        mothers = [Chromosome(str(mother)) for i in range(0, size/2)]
+        fathers = [Chromosome(str(father)) for i in range(0, size/2)]
+        return zip(mothers, fathers)
+
+
+    def getByTournament(self):
+        best_item = None
+        for i in range(0, 16):
+            item = random.choice(self.population)
+            if best_item == None:
+                best_item = item
+                continue
+            elif item.cost > best_item.cost:
+                best_item = item
+        return best_item
 
 class TravelingSalesman_PMX_TopDown(TravelingSalesman):
 
@@ -55,26 +91,7 @@ class TravelingSalesman_PMX_TopDown(TravelingSalesman):
         self.population = pmx.mate(pairs)
 
     def pair(self):
-        pop_clone = list(self.population) # Clone the list
-
-        pop_clone = pop_clone[:self.params["NumChromes"]] # Only take the worthy
-
-        # Shuffle the list up
-        random.shuffle(pop_clone)
-
-        # Split into two
-        left, right = pop_clone[:len(pop_clone)/2], pop_clone[len(pop_clone)/2:]
-
-        # Pair the right with the left
-        return zip(left, right)
-
-# ga = TravelingSalesman_PMX_TopDown('params.json', 'graph.txt', 3800)
-# ga.init_pop()
-# ga.sort()
-#
-# iterations, chrome = ga.evolve(True)
-# print '\ntotal iterations:', iterations, 'chrome:', chrome
-
+        return self.topdown_pair()
 
 class TravelingSalesman_PMX_Tourn(TravelingSalesman):
 
@@ -82,43 +99,20 @@ class TravelingSalesman_PMX_Tourn(TravelingSalesman):
         self.population = pmx.mate(pairs)
 
     def pair(self):
-        # TODO
-        pass
+        pairs = self.tournament_pair()
+        return self.tournament_pair()
 
 class TravelingSalesman_CX_TopDown(TravelingSalesman):
 
     def mate(self, pairs):
         self.population = cx.mate(pairs)
-        pass
 
     def pair(self):
-        pop_clone = list(self.population) # Clone the list
-
-        pop_clone = pop_clone[:self.params["NumChromes"]] # Only take the worthy
-
-        # Shuffle the list up
-        random.shuffle(pop_clone)
-
-        # Split into two
-        left, right = pop_clone[:len(pop_clone)/2], pop_clone[len(pop_clone)/2:]
-
-        # Pair the right with the left
-        return zip(left, right)
-
-ga = TravelingSalesman_CX_TopDown('params.json', 'graph.txt', 3800)
-ga.init_pop()
-ga.sort()
-
-iterations, chrome = ga.evolve(True)
-print '\ntotal iterations:', iterations, 'chrome:', chrome
-
+        return self.topdown_pair()
 
 class TravelingSalesman_CX_Tourn(TravelingSalesman):
 
     def mate(self, pairs):
         self.population = cx.mate(pairs)
-        pass
-
     def pair(self):
-        # TODO
-        pass
+        return self.tournament_pair()
